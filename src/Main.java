@@ -1,5 +1,6 @@
 import java.net.URI;
 
+import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.htmlparser.beans.FilterBean;
 
@@ -20,15 +21,29 @@ public class Main {
         String granularity;
         String url;
 
-
+        int iy=0,im=0,id=0,ih =0;
         System.out.println("----");
 
-        for (int y = 0; y < (Integer.parseInt(endYear) - Integer.parseInt(startYear)); y++) {
-            for (int m = 0; m < 12; m++) {
 
-                for (int d = 0; d < 31; d++) {
+        MongoClient mongoClient = new MongoClient();
 
-                    for (int h = 0; h < 24; h++) {
+        MongoClient db = new MongoClient("localhost", 27017);
+
+        FindIterable<Document> iterable = db.getDatabase("bitcoin").getCollection("last_step").find(
+                new Document("step_id", 1 ));
+        if(iterable.first()!=null) {
+            iy = (Integer) iterable.first().get("y");
+            im = (Integer) iterable.first().get("m");
+            id = (Integer) iterable.first().get("d");
+            ih = (Integer) iterable.first().get("h");
+        }
+
+        for ( int y= iy ; y < (Integer.parseInt(endYear) - Integer.parseInt(startYear)); y++) {
+            for ( int m = im; m < 12; m++) {
+
+                for (int d = id; d < 31; d++) {
+
+                    for (int h = ih; h < 24; h++) {
                         System.out.println(lp("", "_", 24));
                         url = "https://api.exchange.coinbase.com/products/BTC-USD/candles?start=";
 
@@ -40,6 +55,17 @@ public class Main {
 
                         bean.setURL(url);
 
+                        if(db.getDatabase("bitcoin").getCollection("last_step").replaceOne(new Document("step_id", 1),
+                                new Document("y",y)
+                                    .append("m",m)
+                                    .append("d",d)
+                                    .append("h",h)).getModifiedCount() == 0) {
+                            db.getDatabase("bitcoin").getCollection("last_step").insertOne(new Document("step_id", 1)
+                                            .append("y", y)
+                                            .append("m", m)
+                                            .append("d",d)
+                                            .append("h",h));
+                        }
 
                         String result = bean.getText();
 
@@ -57,9 +83,7 @@ public class Main {
 
                                 System.out.println(" Inserting " + elemPart[0]);
 
-                                MongoClient mongoClient = new MongoClient();
 
-                                MongoClient db = new MongoClient("localhost", 27017);
 
                                 db.getDatabase("bitcoin").getCollection("archive").insertOne(
                                         new Document().append("Time", elemPart[0])
