@@ -38,6 +38,7 @@ public class Main {
             ih = (Integer) iterable.first().get("h");
         }
 
+
         for ( int y= iy ; y < (Integer.parseInt(endYear) - Integer.parseInt(startYear)); y++) {
             for ( int m = im; m < 12; m++) {
 
@@ -71,7 +72,7 @@ public class Main {
 
                         if(result.length()>3) {
                             result = result.substring(1, result.length() - 2);
-
+                            System.out.println("Result =>" + result );
                             String data[] = result.split(",");
 
                             System.out.println(" Url elements count : " + data.length);
@@ -79,9 +80,11 @@ public class Main {
                             for (int j = 0; j < data.length; j++) {
 
                                 String dataElem = data[j].substring(1, data[j].length() - 2);
+
+                                System.out.println("dataElem => " + dataElem ) ;
                                 String[] elemPart = dataElem.split(",");
 
-                                System.out.println(" Inserting " + elemPart[0]);
+                                System.out.println(" Inserting size["+elemPart.length+"]" + elemPart[0]);
 
 
 
