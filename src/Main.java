@@ -27,7 +27,7 @@ public class Main {
 
         MongoClient mongoClient = new MongoClient();
 
-        MongoClient db = new MongoClient("localhost", 27017);
+        MongoClient db = new MongoClient("192.168.1.3", 27017);
 
         FindIterable<Document> iterable = db.getDatabase("bitcoin").getCollection("last_step").find(
                 new Document("step_id", 1 ));
@@ -48,8 +48,13 @@ public class Main {
                         System.out.println(lp("", "_", 24));
                         url = "https://api.exchange.coinbase.com/products/BTC-USD/candles?start=";
 
-                        url = url + (Integer.parseInt(startYear) + y) + "-" + lp("" + (m + 1), "0", 2) + "-" + lp("" + (d + 1), "0", 2) + "T" + lp("" + (h), "0", 2) + ":00:00&end=";
-                        url = url + (Integer.parseInt(startYear) + y) + "-" + lp("" + (m + 1), "0", 2) + "-" + lp("" + (d + 1), "0", 2) + "T" + lp("" + (h + 1), "0", 2) + ":00:00&granularity=60";
+                        url = url + (Integer.parseInt(startYear) + y) + "-" +
+                                lp("" + (m + 1), "0", 2) + "-" + lp("" + (d + 1), "0", 2) +
+                                "T" + lp("" + (h), "0", 2) + ":00:00&end=";
+                        url = url + (Integer.parseInt(startYear) + y) + "-" +
+                                lp("" + (m + 1), "0", 2) + "-" +
+                                lp("" + (d + 1), "0", 2) + "T" +
+                                lp("" + (h + 1), "0", 2) + ":00:00&granularity=60";
                         System.out.println(url);
                         FilterBean bean = new FilterBean();
 
